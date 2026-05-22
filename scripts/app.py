@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from helpers import (
+from scripts.helpers import (
     EventRejectedError,
     get_message_text,
     get_thread_permalink,
