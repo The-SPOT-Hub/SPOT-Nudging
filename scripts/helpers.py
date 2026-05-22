@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import hmac
 import hashlib
 import requests
-import config
+import scripts.config as config
 
 class EventRejectedError(Exception):
     """Custom error for event rejections"""
