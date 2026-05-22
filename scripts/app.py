@@ -33,7 +33,6 @@ def accept_events():
     try:
         info = parse_event_data(data)
     except EventRejectedError as e:
-        print(e)
         return str(e), 204
 
     channel = info['channel']
@@ -41,17 +40,9 @@ def accept_events():
     course_name = info['course_name']
     course_channel_id = info['slack_channel_id']
 
-    print("Everything looks good about the event!")
-    print(f"{channel=}")
-    print(f"{parent_post_ts=}")
-    print(f"{course_name=}")
-    print(f"{course_channel_id=}")
-
     # If there hasn't been a recent post made, post in the course channel
     if not has_recent_channel_post(course_channel_id, parent_post_ts):
         # Post to the channel
-        print("Post initiated!")
-
         permalink = get_thread_permalink(channel, parent_post_ts)
         post_to_slack(
             course_channel_id,
