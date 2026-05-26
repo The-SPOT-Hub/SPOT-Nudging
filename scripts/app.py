@@ -15,6 +15,10 @@ app = Flask(__name__)
 @app.route("/slack/events", methods=['POST'])
 def accept_events():
     """Route handler for all requests that come through"""
+    # If the request is for URL verification, handle that and return
+    if is_url_verification_challenge(data):
+        return jsonify({"challenge": data['challenge']}), 200
+
     # Validate request
     if not is_request_valid(
         request_body=request.get_data(),
@@ -24,10 +28,6 @@ def accept_events():
         return "Request not verified", 400
 
     data = request.get_json()
-
-    # If the request is for URL verification, handle that and return
-    if is_url_verification_challenge(data):
-        return jsonify({"challenge": data['challenge']}), 200
 
     # Otherwise, we're getting a request from an event in our workspace
     try:
