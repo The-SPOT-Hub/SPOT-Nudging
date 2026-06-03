@@ -65,3 +65,6 @@ course_channel_post = [
         }
     }
 ]
+
+# MongoDB
+mongodb_uri = os.environ['MONGODB_URI']
