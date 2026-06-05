@@ -6,12 +6,6 @@ import hashlib
 import requests
 import scripts.config as config
 
-class EventRejectedError(Exception):
-    """Custom error for event rejections"""
-    def __init__(self, message):
-        super().__init__(message)
-
-
 SECONDS_PER_WEEK = 7 * 24 * 60 * 60
 REPLAY_ATTACK_THRESHOLD = 60 * 5  # 5 minutes
 
@@ -207,15 +201,15 @@ def parse_event_data(data):
 
     # Check the request is coming from the SPOT channel
     if not is_from_spot_channel(event_data):
-        raise EventRejectedError("Not from SPOT")
+        return None
 
     # Check that the request data is from a human reply
     if not is_human_message(event_data):
-        raise EventRejectedError("Bot message")
+        return None
 
     # Check that the request is from a message reply
     if not is_thread_reply(event_data):
-        raise EventRejectedError("Not a valid message reply")
+        return None
 
     channel = event_data['channel']
     ts = event_data['thread_ts']
@@ -224,19 +218,21 @@ def parse_event_data(data):
     thread_history = get_conversation_replies(channel, ts)
     first_message = thread_history['messages'][0]
     if not is_bot_thread(first_message):
-        raise EventRejectedError("Not a bot thread")
+        return None
 
+    # Check if there is course info in the parent message
     course_info = get_course_info(first_message)
     if not course_info:
-        raise EventRejectedError("No course info")
+        return None
 
     # Check that message was posted on latest weekly thread
     if not is_current_weekly_thread(first_message):
-        raise EventRejectedError("Not a current thread")
+        return None
 
+    # Check that we have Slack channel info for the course
     slack_channel_id = get_ls_course_slack_channel_id(course_info)
     if not slack_channel_id:
-        raise EventRejectedError("Not an eligible LS course")
+        return None
 
     return {
         "channel": channel, 

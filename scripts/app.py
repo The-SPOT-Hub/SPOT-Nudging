@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 from scripts.helpers import (
-    EventRejectedError,
     get_message_text,
     get_thread_permalink,
     has_recent_channel_post,
@@ -43,14 +42,13 @@ def accept_events():
         return str(e), 500
 
     # Parse event data
-    try:
-        info = parse_event_data(data)
-    except EventRejectedError as e:
+    info = parse_event_data(data)
+    if info is None:
         try:
             update_event(event_id, {'status': 'rejected'})
         except DatabaseError as e:
             return str(e), 500
-        return str(e), 204
+        return "", 204
 
     # Update database to mark as 'processed'
     try:
