@@ -1,3 +1,13 @@
+> **⚠️ INACTIVE — This repository is no longer the active automation.**
+>
+> This automation has moved to AWS as of 6/15/26. The current, active repository is **[SPOT-Nudging-Serverless](https://github.com/The-SPOT-Hub/SPOT-Nudging-Serverless)**.
+>
+> This repo is kept for historical reference.
+>
+> The logic itself is unchanged — only the infrastructure that invokes it has moved.
+ 
+---
+
 # SPOT Nudging Bot
 
 ## What it does
